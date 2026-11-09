@@ -6,6 +6,10 @@ the Surge Effects Bank (AU, VST3, VST2). It is not supported upstream.
 
 ## Requirements
 
+The plugins run on Lion but cannot be built there: the newest Xcode for Lion
+(4.6, clang 3.2) has no C++14 support. Build on a newer Mac and copy the
+plugins to the Lion machine.
+
 - A Mac that can run **Xcode 11** (tested: macOS 10.14.6 Mojave, Xcode 11.3.1,
   10.15 SDK). Xcode 12+ can no longer target 10.7.
 - CMake 3.15 or newer (tested with 3.22.6).
