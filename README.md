@@ -1,3 +1,25 @@
+# Surge 1.9.0 for Mac OS X 10.7 Lion
+
+> **This is an unofficial fork of Surge.** Its only purpose is to make Surge 1.9.0
+> build and run on Mac OS X 10.7 Lion. It is not made, endorsed or supported by the
+> Surge Synth Team.
+>
+> **If you want Surge, please get it from the original project instead:**
+> **[github.com/surge-synthesizer/surge](https://github.com/surge-synthesizer/surge)**
+> (downloads at [surge-synthesizer.github.io](https://surge-synthesizer.github.io)).
+> The original project is where Surge is developed, and its current version, Surge XT,
+> is far newer than the 1.9.0 code in this fork.
+
+Use this fork only if you need Surge on a Mac running OS X 10.7 Lion. It builds the
+Surge synth and the Surge Effects Bank as AU, VST3 and VST2 plugins for Lion.
+Build instructions and the full list of changes are in [LION.md](LION.md).
+
+Please report problems with this fork in this repository, not to the Surge Synth Team.
+
+---
+
+*The original Surge 1.9.0 README follows.*
+
 # Surge
 
 CI: [![CI Build Status](https://dev.azure.com/surge-synthesizer/surge/_apis/build/status/surge-synthesizer.surge?branchName=main)](https://dev.azure.com/surge-synthesizer/surge/_build/latest?definitionId=2&branchName=main)
