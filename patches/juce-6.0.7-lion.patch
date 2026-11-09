@@ -1,0 +1,41 @@
+diff --git a/modules/juce_core/native/juce_osx_ObjCHelpers.h b/modules/juce_core/native/juce_osx_ObjCHelpers.h
+index 112c640..f592531 100644
+--- a/modules/juce_core/native/juce_osx_ObjCHelpers.h
++++ b/modules/juce_core/native/juce_osx_ObjCHelpers.h
+@@ -152,7 +152,7 @@ inline var nsDictionaryToVar (NSDictionary* dictionary)
+     DynamicObject::Ptr dynamicObject (new DynamicObject());
+ 
+     for (NSString* key in dictionary)
+-        dynamicObject->setProperty (nsStringToJuce (key), nsObjectToVar (dictionary[key]));
++        dynamicObject->setProperty (nsStringToJuce (key), nsObjectToVar ([dictionary objectForKey: key]));
+ 
+     return var (dynamicObject.get());
+ }
+diff --git a/modules/juce_gui_basics/native/juce_mac_FileChooser.mm b/modules/juce_gui_basics/native/juce_mac_FileChooser.mm
+index 92d6646..498ec96 100644
+--- a/modules/juce_gui_basics/native/juce_mac_FileChooser.mm
++++ b/modules/juce_gui_basics/native/juce_mac_FileChooser.mm
+@@ -109,7 +109,8 @@ Agreement and JUCE Privacy Policy (both effective as of the 16th June 2020).
+             if (! isSave)
+             {
+                 auto* openPanel = static_cast<NSOpenPanel*> (panel);
+-                [openPanel setAccessoryViewDisclosed: YES];
++                if ([openPanel respondsToSelector: @selector (setAccessoryViewDisclosed:)]) // 10.11+
++                    [openPanel setAccessoryViewDisclosed: YES];
+             }
+         }
+ 
+diff --git a/modules/juce_gui_basics/native/juce_mac_NSViewComponentPeer.mm b/modules/juce_gui_basics/native/juce_mac_NSViewComponentPeer.mm
+index 807cdb0..0c4890c 100644
+--- a/modules/juce_gui_basics/native/juce_mac_NSViewComponentPeer.mm
++++ b/modules/juce_gui_basics/native/juce_mac_NSViewComponentPeer.mm
+@@ -1609,7 +1609,8 @@ void setFullScreenSizeConstraints (const ComponentBoundsConstrainer& c)
+     {
+         const auto minSize = NSMakeSize (static_cast<float> (c.getMinimumWidth()),
+                                          0.0f);
+-        [window setMinFullScreenContentSize: minSize];
++        if ([window respondsToSelector: @selector (setMinFullScreenContentSize:)]) // 10.11+
++            [window setMinFullScreenContentSize: minSize];
+     }
+ 
+     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (NSViewComponentPeer)

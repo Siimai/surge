@@ -1,0 +1,26 @@
+diff --git a/vstgui/lib/platform/mac/cocoa/nsviewframe.mm b/vstgui/lib/platform/mac/cocoa/nsviewframe.mm
+index b805ea7..48d4b06 100644
+--- a/vstgui/lib/platform/mac/cocoa/nsviewframe.mm
++++ b/vstgui/lib/platform/mac/cocoa/nsviewframe.mm
+@@ -913,7 +913,7 @@ static id VSTGUI_NSView_makeTouchbar (id self)
+ 	inDraw = true;
+ 	NSGraphicsContext* nsContext = [NSGraphicsContext currentContext];
+ 
+-#if MAC_OS_X_VERSION_MIN_REQUIRED < MAX_OS_X_VERSION_10_10
++#if MAC_OS_X_VERSION_MIN_REQUIRED < MAC_OS_X_VERSION_10_10
+ 	auto cgContext = static_cast<CGContextRef> ([nsContext graphicsPort]);
+ #else
+ 	auto cgContext = static_cast<CGContextRef> ([nsContext CGContext]);
+diff --git a/vstgui/lib/platform/mac/mactimer.cpp b/vstgui/lib/platform/mac/mactimer.cpp
+index c999a24..e4385de 100644
+--- a/vstgui/lib/platform/mac/mactimer.cpp
++++ b/vstgui/lib/platform/mac/mactimer.cpp
+@@ -55,7 +55,7 @@ bool MacTimer::start (uint32_t fireTime)
+ 	if (timer)
+ 	{
+ #if MAC_OS_X_VERSION_MAX_ALLOWED > MAC_OS_X_VERSION_10_8
+-	#if MAC_OS_X_VERSION_MIN_REQUIRED <= MAX_OS_X_VERSION_10_8
++	#if MAC_OS_X_VERSION_MIN_REQUIRED <= MAC_OS_X_VERSION_10_8
+ 		if (CFRunLoopTimerSetTolerance)
+ 	#endif
+ 			CFRunLoopTimerSetTolerance (timer, fireTime * 0.0001f);

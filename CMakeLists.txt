@@ -8,7 +8,16 @@
 cmake_minimum_required(VERSION 3.15)
 cmake_policy(SET CMP0091 NEW)
 set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
-set(CMAKE_OSX_DEPLOYMENT_TARGET 10.9 CACHE STRING "Build for 10.9")
+# lion-1.9.0: build for Mac OS X 10.7 Lion by default (see LION.md)
+set(CMAKE_OSX_DEPLOYMENT_TARGET 10.7 CACHE STRING "Build for 10.7")
+set(CMAKE_OSX_ARCHITECTURES x86_64 CACHE STRING "Lion is x86_64 only")
+if(CMAKE_HOST_APPLE)
+  # Below 10.9 clang defaults to libstdc++, which is not installed; Lion ships libc++
+  set(CMAKE_CXX_FLAGS "-stdlib=libc++" CACHE STRING "")
+  foreach(kind EXE SHARED MODULE)
+    set(CMAKE_${kind}_LINKER_FLAGS "-stdlib=libc++" CACHE STRING "")
+  endforeach()
+endif()
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 
 if(NOT CMAKE_BUILD_TYPE)
@@ -21,6 +30,10 @@ if(NOT BUILD_TESTING)
 endif()
 
 project(Surge VERSION 1.9.0.0 LANGUAGES CXX ASM)
+
+# lion-1.9.0: Mac OS X 10.7 fixes for vstgui.surge, applied once at configure time
+include(cmake/apply-patch.cmake)
+surge_apply_patch(${CMAKE_SOURCE_DIR}/vstgui.surge ${CMAKE_SOURCE_DIR}/patches/vstgui-lion.patch)
 
 set(CMAKE_CXX_EXTENSIONS OFF)
 if(APPLE)
@@ -436,6 +449,10 @@ set(SURGE_VST2_LIBRARY_SOURCES
   ${VST2SDK_DIR}/public.sdk/source/vst2.x/vstplugmain.cpp
   vstgui.surge/vstgui/plugin-bindings/aeffguieditor.cpp
   )
+
+if( DEFINED VST2SDK_DIR )
+  set_source_files_properties(${VST2SDK_DIR}/public.sdk/source/vst2.x/audioeffect.cpp ${VST2SDK_DIR}/public.sdk/source/vst2.x/audioeffectx.cpp ${VST2SDK_DIR}/public.sdk/source/vst2.x/vstplugmain.cpp PROPERTIES COMPILE_OPTIONS "-Wno-error;-Wno-c++11-narrowing")
+endif()
 
 set(SURGE_LV2_SOURCES
   src/lv2/SurgeLv2Export.cpp
@@ -1486,6 +1503,9 @@ if( ${BUILD_SURGE_JUCE_PLUGINS} )
 
     if( APPLE )
       add_dependencies( Surge-Effects-Bank-Packaged surge-fx_AU )
+      # Lion: link AudioUnit before AudioToolbox so AudioUnitGetParameter & co bind to
+      # AudioUnit.framework (SDK $ld$add$os10.x hints); they are not in AudioToolbox on 10.7
+      target_link_options( surge-fx_AU PRIVATE "SHELL:-framework AudioUnit" )
 
       add_custom_command(
             TARGET Surge-Effects-Bank-Packaged

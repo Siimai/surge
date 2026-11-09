@@ -1,2 +1,5 @@
 # Auto detect text files and perform LF normalization
 * text=auto
+
+# Patches carry CRLF lines for JUCE sources; keep them byte-exact
+patches/*.patch -text
